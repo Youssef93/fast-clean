@@ -1,0 +1,25 @@
+{
+  "name": "fast-clean",
+  "version": "1.0.0",
+  "description": "LightWeight, dependency free, javascript object cleaning library",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha ./test/spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Youssef93/fast-clean.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Youssef93/fast-clean/issues"
+  },
+  "homepage": "https://github.com/Youssef93/fast-clean#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2"
+  },
+  "keywords": ["clean", "objects", "arrays", "strip", "deep", "fast", "undefined", "empty", "delete", "deep-clean", "deep-cleaner", "clean-deep", "quick-clean", "performance"]
+}
