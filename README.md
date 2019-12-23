@@ -1,5 +1,6 @@
 ## Fast-Cleaner
 Fast cleaner is an npm module designed to clean javascript objects from unwanted values like `undefined`, `NaN`, `{}`(empty objects) .. etc.
+(now supports typescript)
 
 What makes this module **different**. Check out our [comparison](#what-makes-this-module-unique)
 

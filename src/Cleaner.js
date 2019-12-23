@@ -7,10 +7,10 @@ class Cleaner {
 
   clean(data) {
     if(!data) return data;
+    
+    if(Array.isArray(data)) return this._getFilteredArray(data);
 
     if(this._isObject(data)) return this._cleanObject(data);
-    
-    else if(Array.isArray(data)) return this._getFilteredArray(data);
 
     return data;
   }
