@@ -2,30 +2,24 @@
 
 const Cleaner = require('./src/Cleaner');
 
-const baseAssertion = function(value) {
-  return  Number.isNaN(value) || value === undefined || value === "";
-}
+const getDefaultOptions = (options) => {
+  const optionsToRead = options || {}
 
-const getAssertingFn = function(options) {
-  let assertingFn = baseAssertion;
-
-  if(!options) return assertingFn;
-
-  if (options.nullCleaner) {
-    assertingFn = function(value) {
-      if (value === null) {
-        return true;
-      }
-      return baseAssertion(value);
-    };
+  const defaultedOptions = {
+    nullCleaner: optionsToRead.hasOwnProperty('nullCleaner') ? optionsToRead.nullCleaner : false,
+    emptyArraysCleaner: optionsToRead.hasOwnProperty('emptyArraysCleaner') ? optionsToRead.emptyArraysCleaner : true,
+    emptyObjectsCleaner: optionsToRead.hasOwnProperty('emptyObjectsCleaner') ? optionsToRead.emptyObjectsCleaner : true,
+    emptyStringsCleaner: optionsToRead.hasOwnProperty('emptyStringsCleaner') ? optionsToRead.emptyStringsCleaner : true,
+    nanCleaner: optionsToRead.hasOwnProperty('nanCleaner') ? optionsToRead.nanCleaner : true
   }
 
-  return assertingFn;
+  return defaultedOptions
 }
 
 module.exports = {
   clean: function(object, options) {
-    const cleaner = new Cleaner(getAssertingFn(options));
+    const defaultedOptions = getDefaultOptions(options)
+    const cleaner = new Cleaner(defaultedOptions);
     return cleaner.clean(object);
   }
 }
