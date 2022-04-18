@@ -1,31 +1,59 @@
+
 ## Fast-Cleaner
+
 Fast cleaner is an npm module designed to clean javascript objects from unwanted values like `undefined`, `NaN`, `{}`(empty objects) .. etc.
+
 (now supports typescript)
+
+  
 
 What makes this module **different**. Check out our [comparison](#what-makes-this-module-unique)
 
+  
+
 ## Content
+
 - [Fast-Cleaner](#fast-cleaner)
+
 - [Content](#content)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [Example](#example)
-  - [Options](#options)
-  - [Values cleaned by default are](#values-cleaned-by-default-are)
-  - [What makes this module unique](#what-makes-this-module-unique)
+
+- [Installation](#installation)
+
+- [Usage](#usage)
+
+- [Example](#example)
+
+- [Options](#options)
+
+- [Additional Examples](#additional-examples)
+
+- [Values cleaned by default are](#values-cleaned-by-default-are)
+
+- [What makes this module unique](#what-makes-this-module-unique)
+
+  
 
 ### Installation
+
 ```
+
 npm i --save fast-clean
+
 ```
+
 ### Usage
+
 ```
-const  cleanedObj  =  cleaner.clean(objectToClean, options);
+
+const cleanedObj = cleaner.clean(objectToClean, options);
+
 ```
+
 #### Example
+
 ```
 const obj = {
-a: 'value',
+  a: 'value',
   emptyString: '',
   emptyArray: [],
   emptyObject: {},
@@ -75,7 +103,59 @@ a: 'value',
 const cleanedObj = cleaner.clean(obj);
 ```
 
+  
+
 Output is
+
+```
+{
+  a: 'value',
+  falseValue: false,
+  zero: 0,
+  b: {
+    a: 'another value',
+    arr: [
+      { d: 'value' },
+      { a: [
+        {
+          x: true,
+        },
+        {
+          z: [true],
+          subChild: [
+            {
+              a: true
+            }
+          ]
+        }
+      ]}
+    ],
+
+    nestedArr1: [[true, false]],
+  }
+}
+
+```
+
+  
+
+### Options
+
+Options is an object that allows you to choose what filters you want to add to the module. Currently we have the `nullCleaner` only. We will proceed to add different filters step by step carefully because we want to keep what is [unique](#what-makes-this-module-unique) about our module.
+
+  
+
+- `nullCleaner` : remove null values (defaults to `false`)
+- `emptyArraysCleaner` : removes empty arrays (defaults to `true`)
+- `emptyObjectsCleaner` : removes empty objects (defaults to `true`)
+- `emptyStringsCleaner` : removes empty strings (defaults to `true`)
+- `nanCleaner` : removes NaN (defaults to `true`)
+
+### Additional Examples
+Based on the mentioned sample object above, here's the output with different options
+
+With **nullCleaner** = `true`
+
 ```
 {
   a: 'value',
@@ -104,18 +184,95 @@ Output is
 
     nestedArr1: [[null, true, false]],
     nestedArr2: [[null]],
-   }
   }
-  ```
+}
 
-### Options
-Options is an object that allows you to choose what filters you want to add to the module. Currently we have the `nullCleaner` only. We will proceed to add different filters step by step carefully because we want to keep what is [unique](#what-makes-this-module-unique) about our module.
+```
 
- - `nullCleaner` : remove null values (defaults to `false`)
- In the previous [example](#example), if we set the `nullCleaner` to `true` in the options. This would be the output.
- ```
- {
-   a: 'value',
+With **nullCleaner** = `true` & **emptyArrayCleaner** = `false`
+```
+{
+  a: 'value',
+  emptyArray: [],
+  falseValue: false,
+  zero: 0,
+  b: {
+    a: 'another value',
+    arr: [
+      { d: 'value' },
+      {
+        a: [
+          {
+            x: true
+          },
+          {
+            z: [true],
+            subChild: [
+              {
+                a: true
+              }
+            ]
+          }
+        ]
+      }
+    ],
+
+    secondArr: [],
+    nestedArr1: [[true, false], []],
+    nestedArr2: [[], []]
+  }
+}
+
+```
+
+With **nullCleaner** = `true` & **emptyObjectsCleaner** = `false`
+```
+{
+  a: 'value',
+  emptyObject: {},
+  falseValue: false,
+  zero: 0,
+  b: {
+    a: 'another value',
+    arr: [
+      {},
+      { d: 'value' },
+      {
+        a: [
+          {
+            x: true,
+          },
+          {
+          },
+          {
+            z: [true],
+            subChild: [
+              {
+                a: true
+              },
+              {
+              }
+            ]
+          }
+        ]
+      }
+    ],
+
+    secondArr: [{
+      a: {
+      }
+    }],
+
+    nestedArr1: [[true, false]]
+  }
+}
+
+```
+
+With **nullCleaner** = `true` & **nanCleaner** = `false`
+```
+{
+  a: 'value',
   falseValue: false,
   zero: 0,
   b: {
@@ -125,6 +282,10 @@ Options is an object that allows you to choose what filters you want to add to t
       { a: [
         {
           x: true,
+          y: NaN
+        },
+        {
+          y: NaN
         },
         {
           z: [true],
@@ -137,21 +298,84 @@ Options is an object that allows you to choose what filters you want to add to t
       ]}
     ],
 
-    nestedArr1: [[true, false]],
+    nestedArr1: [[true, false]]
   }
- }
- ```
+}
+
+```
+
+With **nullCleaner**, **emptyObjectsCleaner**, **emptyArrayCleaner** & **emptyStringsCleaner** all equal `false`
+```
+{
+  a: 'value',
+  emptyString: '',
+  emptyArray: [],
+  emptyObject: {},
+  isNull: null,
+  falseValue: false,
+  zero: 0,
+  b: {
+    a: 'another value',
+    anotherEmptyString: '',
+    arr: [
+      { c: null },
+      { d: 'value' },
+      {
+        a: [
+          {
+            x: true
+          },
+          {
+          },
+          {
+            z: [null, true],
+            subChild: [
+              {
+                a: true
+              },
+              {
+
+              }
+            ]
+          }
+        ]
+      }
+    ],
+
+    secondArr: [{
+      a: {
+      }
+    }],
+
+    nestedArr1: [[null, true, false], []],
+    nestedArr2: [[null], []],
+  }
+}
+
+```
 
 ### Values cleaned by default are
+
 - undefined
+
 - '' (empty strings)
+
 - NaN
+
 - {} (empty objects)
+
 - [] (empty arrays)
 
+  
+
 ### What makes this module unique
+
 - It's an extremely lightweight library
+
 - Absolutely no dependencies
-- Extremely fast compared to other modules with the same functionalities. 
-     ![enter image description here](https://github.com/Youssef93/js-object-cleaning-performance-compare/blob/master/performance.jpg?raw=true)
-     You can check how the comparison was made [here](https://github.com/Youssef93/js-object-cleaning-performance-compare)
+
+- Extremely fast compared to other modules with the same functionalities.
+
+![enter image description here](https://github.com/Youssef93/js-object-cleaning-performance-compare/blob/master/performance.jpg?raw=true)
+
+You can check how the comparison was made [here](https://github.com/Youssef93/js-object-cleaning-performance-compare)
