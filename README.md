@@ -147,7 +147,7 @@ Output is
 
 ### Options
 
-Options is an object that allows you to choose what filters you want to add to the module. Currently we have the `nullCleaner` only. We will proceed to add different filters step by step carefully because we want to keep what is [unique](#what-makes-this-module-unique) about our module.
+Options is an object that allows you to choose what filters you want to add to the module.
 
 - `nullCleaner` : remove null values (defaults to `false`)
 - `emptyArraysCleaner` : removes empty arrays (defaults to `true`)
