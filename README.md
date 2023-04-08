@@ -23,10 +23,6 @@ All other options are supported whether you are cleaning in place or not.
 
 ## Content
 
-- [Fast-Cleaner](#fast-cleaner)
-
-- [Content](#content)
-
 - [Installation](#installation)
 
 - [Usage](#usage)
