@@ -5,11 +5,21 @@ Fast cleaner is an npm module designed to clean javascript objects from unwanted
 
 (now supports typescript)
 
-  
-
 What makes this module **different**. Check out our [comparison](#what-makes-this-module-unique)
 
-  
+## Update with version 1.3+
+
+Version 1.3+ now supports cleaning objects in place. This means that the library can avoid creating new objects while cleaning. Instead it can mutate the object passed to it & clean it in place.
+
+This will make the module not only efficient in speed, but in memory consumption as well.
+
+While object mutation might not be a best practice in a lot of cases, in some it will be a better one if you are cleaning large objects & want to avoid huge memory consumption.
+
+This is an **OPTIONAL** feature. You can simply use it by passing `cleanInPlace` = `true` in the options.
+
+The feature is turned off by default for backwards compatibility.
+
+All other options are supported whether you are cleaning in place or not.
 
 ## Content
 
@@ -143,13 +153,12 @@ Output is
 
 Options is an object that allows you to choose what filters you want to add to the module. Currently we have the `nullCleaner` only. We will proceed to add different filters step by step carefully because we want to keep what is [unique](#what-makes-this-module-unique) about our module.
 
-  
-
 - `nullCleaner` : remove null values (defaults to `false`)
 - `emptyArraysCleaner` : removes empty arrays (defaults to `true`)
 - `emptyObjectsCleaner` : removes empty objects (defaults to `true`)
 - `emptyStringsCleaner` : removes empty strings (defaults to `true`)
 - `nanCleaner` : removes NaN (defaults to `true`)
+- `cleanInPlace` : whether the library should create a new object that is cleaned or mutate the object passed to it & clean in place. (defaults to `false`)
 
 ### Additional Examples
 Based on the mentioned sample object above, here's the output with different options
@@ -370,11 +379,13 @@ With **nullCleaner**, **emptyObjectsCleaner**, **emptyArrayCleaner** & **emptySt
 
 ### What makes this module unique
 
-- It's an extremely lightweight library
+- It's an extremely lightweight library.
 
-- Absolutely no dependencies
+- Absolutely no dependencies.
 
 - Extremely fast compared to other modules with the same functionalities.
+
+- The ability to clean objects in place without creating new objects in memory.
 
 ![enter image description here](https://github.com/Youssef93/js-object-cleaning-performance-compare/blob/master/performance.jpg?raw=true)
 

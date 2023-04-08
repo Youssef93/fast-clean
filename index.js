@@ -10,7 +10,8 @@ const getDefaultOptions = (options) => {
     emptyArraysCleaner: optionsToRead.hasOwnProperty('emptyArraysCleaner') ? optionsToRead.emptyArraysCleaner : true,
     emptyObjectsCleaner: optionsToRead.hasOwnProperty('emptyObjectsCleaner') ? optionsToRead.emptyObjectsCleaner : true,
     emptyStringsCleaner: optionsToRead.hasOwnProperty('emptyStringsCleaner') ? optionsToRead.emptyStringsCleaner : true,
-    nanCleaner: optionsToRead.hasOwnProperty('nanCleaner') ? optionsToRead.nanCleaner : true
+    nanCleaner: optionsToRead.hasOwnProperty('nanCleaner') ? optionsToRead.nanCleaner : true,
+    cleanInPlace: optionsToRead.hasOwnProperty('cleanInPlace') ? optionsToRead.cleanInPlace : false,
   }
 
   return defaultedOptions
