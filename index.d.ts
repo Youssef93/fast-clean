@@ -4,6 +4,7 @@ export interface ICleanerOptions {
   emptyObjectsCleaner?: boolean
   emptyStringsCleaner?: boolean
   nanCleaner?: boolean
+  cleanInPlace?: boolean
 }
 
 export function clean(object: any, options?:ICleanerOptions): any;
