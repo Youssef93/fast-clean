@@ -1,6 +1,6 @@
 {
   "name": "fast-clean",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "LightWeight, dependency free, javascript object cleaning library",
   "main": "index.js",
   "scripts": {
