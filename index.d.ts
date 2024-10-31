@@ -7,4 +7,4 @@ export interface ICleanerOptions {
   cleanInPlace?: boolean
 }
 
-export function clean(object: any, options?:ICleanerOptions): any;
+export function clean<T = any>(object: any, options?:ICleanerOptions): T;
