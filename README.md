@@ -3,8 +3,6 @@
 
 Fast cleaner is an npm module designed to clean javascript objects from unwanted values like `undefined`, `NaN`, `{}`(empty objects) .. etc.
 
-(now supports typescript)
-
 What makes this module **different**. Check out our [comparison](#what-makes-this-module-unique)
 
 ## Update with version 1.3+
@@ -23,40 +21,32 @@ All other options are supported whether you are cleaning in place or not.
 
 ## Content
 
-- [Installation](#installation)
-
-- [Usage](#usage)
-
-- [Example](#example)
-
-- [Options](#options)
-
-- [Additional Examples](#additional-examples)
-
-- [Values cleaned by default are](#values-cleaned-by-default-are)
-
-- [What makes this module unique](#what-makes-this-module-unique)
-
-  
+- [Fast-Cleaner](#fast-cleaner)
+- [Update with version 1.3+](#update-with-version-13)
+- [Content](#content)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Usage with typescript](#usage-with-typescript)
+  - [Example](#example)
+  - [Options](#options)
+  - [Additional Examples](#additional-examples)
+  - [Values cleaned by default are](#values-cleaned-by-default-are)
+  - [What makes this module unique](#what-makes-this-module-unique)
 
 ### Installation
-
 ```
-
 npm i --save fast-clean
-
 ```
-
 ### Usage
-
 ```
-
 const cleanedObj = cleaner.clean(objectToClean, options);
-
 ```
-
-#### Example
-
+#### Usage with typescript
+```
+const cleanedObject = cleaner.clean<YOUR_TYPE>(objectToClean, options);
+```
+If you don't specify the generic type, it will default to `any`
+### Example
 ```
 const obj = {
   a: 'value',
@@ -108,11 +98,7 @@ const obj = {
 
 const cleanedObj = cleaner.clean(obj);
 ```
-
-  
-
 Output is
-
 ```
 {
   a: 'value',
@@ -140,13 +126,8 @@ Output is
     nestedArr1: [[true, false]],
   }
 }
-
 ```
-
-  
-
 ### Options
-
 Options is an object that allows you to choose what filters you want to add to the module.
 
 - `nullCleaner` : remove null values (defaults to `false`)
@@ -158,9 +139,7 @@ Options is an object that allows you to choose what filters you want to add to t
 
 ### Additional Examples
 Based on the mentioned sample object above, here's the output with different options
-
 With **nullCleaner** = `true`
-
 ```
 {
   a: 'value',
@@ -191,7 +170,6 @@ With **nullCleaner** = `true`
     nestedArr2: [[null]],
   }
 }
-
 ```
 
 With **nullCleaner** = `true` & **emptyArrayCleaner** = `false`
@@ -227,9 +205,7 @@ With **nullCleaner** = `true` & **emptyArrayCleaner** = `false`
     nestedArr2: [[], []]
   }
 }
-
 ```
-
 With **nullCleaner** = `true` & **emptyObjectsCleaner** = `false`
 ```
 {
@@ -271,9 +247,7 @@ With **nullCleaner** = `true` & **emptyObjectsCleaner** = `false`
     nestedArr1: [[true, false]]
   }
 }
-
 ```
-
 With **nullCleaner** = `true` & **nanCleaner** = `false`
 ```
 {
@@ -302,13 +276,10 @@ With **nullCleaner** = `true` & **nanCleaner** = `false`
         }
       ]}
     ],
-
     nestedArr1: [[true, false]]
   }
 }
-
 ```
-
 With **nullCleaner**, **emptyObjectsCleaner**, **emptyArrayCleaner** & **emptyStringsCleaner** all equal `false`
 ```
 {
@@ -356,31 +327,18 @@ With **nullCleaner**, **emptyObjectsCleaner**, **emptyArrayCleaner** & **emptySt
     nestedArr2: [[null], []],
   }
 }
-
 ```
-
 ### Values cleaned by default are
-
 - undefined
-
 - '' (empty strings)
-
 - NaN
-
 - {} (empty objects)
-
 - [] (empty arrays)
-
   
-
 ### What makes this module unique
-
 - It's an extremely lightweight library.
-
 - Absolutely no dependencies.
-
 - Extremely fast compared to other modules with the same functionalities.
-
 - The ability to clean objects in place without creating new objects in memory.
 
 ![enter image description here](https://github.com/Youssef93/js-object-cleaning-performance-compare/blob/master/performance.jpg?raw=true)
