@@ -6,6 +6,7 @@ const withEmptyArraysValidation = require('./with-empty-arrays');
 const withEmptyObjectsValidation = require('./with-empty-objects');
 const withEmptyStringsValidation = require('./with-empty-strings');
 const withNanValidation = require('./with-nan-cleaner');
+const withoutNullWithoutAValidation = require('./withoutnull-withouta-validation');
 
 const cleaner = require('../index');
 
@@ -30,7 +31,7 @@ describe('Cleaning', () => {
       expect(input).not.toStrictEqual(cleanedObj);
     });
   
-    it('should test the object with the null cleaner & emptyArrayCleaner', () => {
+    it('should test the object with the null cleaner & emptyArraysCleaner', () => {
       const cleanedObj = cleaner.clean(input, { nullCleaner: true, emptyArraysCleaner: false });
       expect(cleanedObj).toStrictEqual(withEmptyArraysValidation);
       expect(input).not.toStrictEqual(cleanedObj);
@@ -42,7 +43,7 @@ describe('Cleaning', () => {
       expect(input).not.toStrictEqual(cleanedObj);
     });
   
-    it('should test the object without the null cleaner & emptyObjectsCleaner, emptyArrayCleaner & emptyStringsCleaner', () => {
+    it('should test the object without the null cleaner & emptyObjectsCleaner, emptyArraysCleaner & emptyStringsCleaner', () => {
       const cleanedObj = cleaner.clean(input, { nullCleaner: false, emptyObjectsCleaner: false, emptyArraysCleaner: false, emptyStringsCleaner: false });
       expect(cleanedObj).toStrictEqual(withEmptyStringsValidation);
       expect(input).not.toStrictEqual(cleanedObj);
@@ -51,6 +52,12 @@ describe('Cleaning', () => {
     it('should test the object with the null cleaner & nanCleaner', () => {
       const cleanedObj = cleaner.clean(input, { nullCleaner: true, nanCleaner: false });
       expect(cleanedObj).toStrictEqual(withNanValidation);
+      expect(input).not.toStrictEqual(cleanedObj);
+    });
+
+    it('should test the object with keys cleaner', () => {
+      const cleanedObj = cleaner.clean(input, { cleanKeys: ['a'], skipKeys: ['isUndefined'] });
+      expect(cleanedObj).toStrictEqual(withoutNullWithoutAValidation);
       expect(input).not.toStrictEqual(cleanedObj);
     });
   });
@@ -68,7 +75,7 @@ describe('Cleaning', () => {
       expect(input).toStrictEqual(cleanedObj);
     });
   
-    it('should test the object with the null cleaner & emptyArrayCleaner', () => {
+    it('should test the object with the null cleaner & emptyArraysCleaner', () => {
       const cleanedObj = cleaner.clean(input, { nullCleaner: true, emptyArraysCleaner: false, cleanInPlace: true });
       expect(cleanedObj).toStrictEqual(withEmptyArraysValidation);
       expect(input).toStrictEqual(cleanedObj);
@@ -80,7 +87,7 @@ describe('Cleaning', () => {
       expect(input).toStrictEqual(cleanedObj);
     });
   
-    it('should test the object without the null cleaner & emptyObjectsCleaner, emptyArrayCleaner & emptyStringsCleaner', () => {
+    it('should test the object without the null cleaner & emptyObjectsCleaner, emptyArraysCleaner & emptyStringsCleaner', () => {
       const cleanedObj = cleaner.clean(input, { nullCleaner: false, emptyObjectsCleaner: false, emptyArraysCleaner: false, emptyStringsCleaner: false, cleanInPlace: true });
       expect(cleanedObj).toStrictEqual(withEmptyStringsValidation);
       expect(input).toStrictEqual(cleanedObj);
@@ -89,6 +96,12 @@ describe('Cleaning', () => {
     it('should test the object with the null cleaner & nanCleaner', () => {
       const cleanedObj = cleaner.clean(input, { nullCleaner: true, nanCleaner: false, cleanInPlace: true });
       expect(cleanedObj).toStrictEqual(withNanValidation);
+      expect(input).toStrictEqual(cleanedObj);
+    });
+
+    it('should test the object with keys cleaner', () => {
+      const cleanedObj = cleaner.clean(input, { cleanKeys: ['a'], cleanInPlace: true, skipKeys: ['isUndefined'] });
+      expect(cleanedObj).toStrictEqual(withoutNullWithoutAValidation);
       expect(input).toStrictEqual(cleanedObj);
     });
   });

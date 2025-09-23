@@ -5,6 +5,8 @@ export interface ICleanerOptions {
   emptyStringsCleaner?: boolean
   nanCleaner?: boolean
   cleanInPlace?: boolean
+  cleanKeys?: string[]
+  skipKeys?: string[]
 }
 
 export function clean<T = any>(object: any, options?:ICleanerOptions): T;

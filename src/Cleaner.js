@@ -25,14 +25,14 @@ class Cleaner {
 
       if (Array.isArray(value)) {
         const mappedArr = this._cleanArray(value);
-        if(this._shouldReturnArray(mappedArr)) object[key] = mappedArr;
+        if(this._shouldReturnArray(mappedArr, key)) object[key] = mappedArr;
         else delete object[key];
       } else if (this._isObject(value)) {
         const subFiltered = this.clean(value);
-        if(this._shouldReturnObject(subFiltered)) object[key] = subFiltered;
+        if(this._shouldReturnObject(subFiltered, key)) object[key] = subFiltered;
         else delete object[key];
       } else {
-        if (this._shouldRemoveValue(value)) delete object[key]
+        if (this._shouldRemoveValue(value, key)) delete object[key]
       }
     })
 
@@ -47,12 +47,12 @@ class Cleaner {
 
       if (Array.isArray(value)) {
         const mappedArr = this._cleanArray(value);
-        if (this._shouldReturnArray(mappedArr)) filtered[key] = mappedArr;
+        if (this._shouldReturnArray(mappedArr, key)) filtered[key] = mappedArr;
       } else if (this._isObject(value)) {
         const subFiltered = this.clean(value);
-        if (this._shouldReturnObject(subFiltered)) filtered[key] = subFiltered;
+        if (this._shouldReturnObject(subFiltered, key)) filtered[key] = subFiltered;
       } else {
-        if (!this._shouldRemoveValue(value)) filtered[key] = value;
+        if (!this._shouldRemoveValue(value, key)) filtered[key] = value;
       }
     });
   
@@ -94,19 +94,33 @@ class Cleaner {
     return filteredArr;
   }
 
+  _isUserOverride(key) {
+    if(!key || (!this.options.cleanKeys.has(key) && !this.options.skipKeys.has(key))) return undefined;
+    // higher priority to cleaning
+    if(this.options.cleanKeys.has(key)) return false;
+    if(this.options.skipKeys.has(key)) return true;
+  }
+
   _isObject (value) {
     return Object.prototype.toString.call(value) === "[object Object]"
   }
 
-  _shouldReturnArray (arr) {
+  _shouldReturnArray (arr, key) {
+    const userOverride = this._isUserOverride(key);
+    if(userOverride !== undefined) return userOverride;
     return !this.options.emptyArraysCleaner || arr.length !== 0
   }
 
-  _shouldReturnObject (object) {
+  _shouldReturnObject (object, key) {
+    const userOverride = this._isUserOverride(key);
+    if(userOverride !== undefined) return userOverride;
     return !this.options.emptyObjectsCleaner || Object.keys(object).length !== 0
   }
 
-  _shouldRemoveValue (value) {
+  _shouldRemoveValue (value, key) {
+    const userOverride = this._isUserOverride(key);
+    if(userOverride !== undefined) return !userOverride;
+
     if(value === null) return this.options.nullCleaner
   
     if(value === "") return this.options.emptyStringsCleaner

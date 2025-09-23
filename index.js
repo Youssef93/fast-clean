@@ -2,6 +2,18 @@
 
 const Cleaner = require('./src/Cleaner');
 
+function createKeysSet(optionsToRead) {
+  const keys = optionsToRead.hasOwnProperty('cleanKeys') ? optionsToRead.cleanKeys : [];
+  const set = new Set(keys);
+  return set;
+}
+
+function createSkipKeysSet(optionsToRead) {
+  const keys = optionsToRead.hasOwnProperty('skipKeys') ? optionsToRead.skipKeys : [];
+  const set = new Set(keys);
+  return set;
+}
+
 const getDefaultOptions = (options) => {
   const optionsToRead = options || {}
 
@@ -12,6 +24,8 @@ const getDefaultOptions = (options) => {
     emptyStringsCleaner: optionsToRead.hasOwnProperty('emptyStringsCleaner') ? optionsToRead.emptyStringsCleaner : true,
     nanCleaner: optionsToRead.hasOwnProperty('nanCleaner') ? optionsToRead.nanCleaner : true,
     cleanInPlace: optionsToRead.hasOwnProperty('cleanInPlace') ? optionsToRead.cleanInPlace : false,
+    cleanKeys: createKeysSet(optionsToRead),
+    skipKeys: createSkipKeysSet(optionsToRead),
   }
 
   return defaultedOptions
