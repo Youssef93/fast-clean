@@ -1,53 +1,54 @@
+# Fast-Cleaner
 
-## Fast-Cleaner
+**Fast-Cleaner** is a lightweight, dependency-free npm module that helps you clean JavaScript objects by removing unwanted values such as `undefined`, `NaN`, empty objects `{}`, empty arrays `[]`, and more.
 
-Fast cleaner is an npm module designed to clean javascript objects from unwanted values like `undefined`, `NaN`, `{}`(empty objects) .. etc.
+It’s designed to be **fast, memory-efficient, and flexible** with full support for cleaning deeply nested objects and arrays.
 
-What makes this module **different**. Check out our [comparison](#what-makes-this-module-unique)
+👉 Check out [what makes this module unique](#what-makes-this-module-unique).
 
-## Update with version 1.3+
+## New in v1.5+
+Version 1.5+ supports 2 new options. `cleanKeys` & `skipKeys`
+Checkout the [options](#options) for more info.
 
-Version 1.3+ now supports cleaning objects in place. This means that the library can avoid creating new objects while cleaning. Instead it can mutate the object passed to it & clean it in place.
+##  New in v1.3+
+Starting from version **1.3+**, Fast-Cleaner supports **in-place cleaning**.  
+This allows you to clean objects without creating new copies, reducing memory usage for large objects.
 
-This will make the module not only efficient in speed, but in memory consumption as well.
+- Enable it by setting `cleanInPlace: true`.
+- By default, this is turned **off** for backward compatibility.
 
-While object mutation might not be a best practice in a lot of cases, in some it will be a better one if you are cleaning large objects & want to avoid huge memory consumption.
+## 📚 Table of Contents
+- [Installation](#installation)
+- [Usage](#usage)
+  - [TypeScript Usage](#typescript-usage)
+- [Example](#example)
+- [Options](#options)
+- [Additional Examples](#additional-examples)
+- [Default Cleaned Values](#default-cleaned-values)
+- [What Makes This Module Unique](#what-makes-this-module-unique)
 
-This is an **OPTIONAL** feature. You can simply use it by passing `cleanInPlace` = `true` in the options.
+<h2 id="installation">💾 Installation</h2>
 
-The feature is turned off by default for backwards compatibility.
-
-All other options are supported whether you are cleaning in place or not.
-
-## Content
-
-- [Fast-Cleaner](#fast-cleaner)
-- [Update with version 1.3+](#update-with-version-13)
-- [Content](#content)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [Usage with typescript](#usage-with-typescript)
-  - [Example](#example)
-  - [Options](#options)
-  - [Additional Examples](#additional-examples)
-  - [Values cleaned by default are](#values-cleaned-by-default-are)
-  - [What makes this module unique](#what-makes-this-module-unique)
-
-### Installation
+```bash
+npm install --save fast-clean
 ```
-npm i --save fast-clean
-```
-### Usage
-```
+<h2 id="usage">🛠 Usage</h2>
+
+```js
 const cleanedObj = cleaner.clean(objectToClean, options);
 ```
-#### Usage with typescript
+
+<h3 id="typescript-usage">TypeScript Usage</h3>
+
+```ts
+const cleanedObject = cleaner.clean<YourType>(objectToClean, options);
 ```
-const cleanedObject = cleaner.clean<YOUR_TYPE>(objectToClean, options);
-```
-If you don't specify the generic type, it will default to `any`
-### Example
-```
+
+If you don’t provide a type, it defaults to `any`.
+
+<h2 id="example">📝 Example</h2>
+
+```js
 const obj = {
   a: 'value',
   emptyString: '',
@@ -64,42 +65,23 @@ const obj = {
       { c: null },
       { d: 'value' },
       { a: [
-        {
-          x: true,
-          y: NaN
-        },
-        {
-          y: NaN
-        },
-        {
-          z: [null, true],
-          subChild: [
-            {
-              a: true
-            },
-            {
-              
-            }
-          ]
-        }
+        { x: true, y: NaN },
+        { y: NaN },
+        { z: [null, true], subChild: [{ a: true }, {}] }
       ]}
     ],
-
-    secondArr: [{
-      a: {
-        b: undefined
-      }
-    }],
-
+    secondArr: [{ a: { b: undefined } }],
     nestedArr1: [[null, true, false], [undefined, undefined]],
     nestedArr2: [[null], [undefined, undefined]],
   }
-}
+};
 
-const cleanedObj = cleaner.clean(obj);
+const cleanedObj = cleaner.clean(obj, { nullCleaner: true });
 ```
-Output is
-```
+
+**Output**
+
+```js
 {
   a: 'value',
   falseValue: false,
@@ -109,74 +91,69 @@ Output is
     arr: [
       { d: 'value' },
       { a: [
-        {
-          x: true,
-        },
-        {
-          z: [true],
-          subChild: [
-            {
-              a: true
-            }
-          ]
-        }
+        { x: true },
+        { z: [true], subChild: [{ a: true }] }
       ]}
     ],
-
     nestedArr1: [[true, false]],
   }
 }
 ```
-### Options
-Options is an object that allows you to choose what filters you want to add to the module.
 
-- `nullCleaner` : remove null values (defaults to `false`)
-- `emptyArraysCleaner` : removes empty arrays (defaults to `true`)
-- `emptyObjectsCleaner` : removes empty objects (defaults to `true`)
-- `emptyStringsCleaner` : removes empty strings (defaults to `true`)
-- `nanCleaner` : removes NaN (defaults to `true`)
-- `cleanInPlace` : whether the library should create a new object that is cleaned or mutate the object passed to it & clean in place. (defaults to `false`)
+<h2 id="options">⚙️ Options</h2>
 
-### Additional Examples
-Based on the mentioned sample object above, here's the output with different options
-With **nullCleaner** = `true`
-```
+Pass an `options` object to configure the cleaning behavior.
+
+
+| Option                | Type       | Default | Description |
+|------------------------|------------|---------|-------------|
+| `nullCleaner`          | `boolean`  | `false` | Remove `null` values. |
+| `emptyArraysCleaner`   | `boolean`  | `true`  | Remove empty arrays `[]`. |
+| `emptyObjectsCleaner`  | `boolean`  | `true`  | Remove empty objects `{}`. |
+| `emptyStringsCleaner`  | `boolean`  | `true`  | Remove empty strings `''`. |
+| `nanCleaner`           | `boolean`  | `true`  | Remove `NaN`. |
+| `cleanInPlace`         | `boolean`  | `false` | Mutate the original object instead of creating a new one. |
+| `cleanKeys`            | `string[]` | `[]`    | Always clean these keys, even if their values are normally valid. |
+| `skipKeys`             | `string[]` | `[]`    | Never clean these keys, even if their values are normally removed. |
+
+> ⚖️ **Precedence rule**: If a key exists in both `cleanKeys` and `skipKeys`, **`cleanKeys` takes priority** (the key will be cleaned).
+
+<h2 id="additional-examples">🔍 Additional Examples</h2>
+
+### With `nullCleaner = false`
+
+```js
 {
   a: 'value',
-  isNull: null,
+  isNull: null, // <<< Remained
   falseValue: false,
   zero: 0,
   b: {
     a: 'another value',
     arr: [
-      { c: null },
+      { c: null }, // <<< Remained
       { d: 'value' },
       { a: [
+        { x: true },
         {
-          x: true,
-        },
-        {
-          z: [null, true],
-          subChild: [
-            {
-              a: true
-            }
-          ]
+          z: [null, true], // <<< Kept first null
+          subChild: [{ a: true }]
         }
       ]}
     ],
 
-    nestedArr1: [[null, true, false]],
-    nestedArr2: [[null]],
+    nestedArr1: [[null, true, false]], // <<< Kept first null
+    nestedArr2: [[null]], // <<< Remained
   }
 }
 ```
 
-With **nullCleaner** = `true` & **emptyArrayCleaner** = `false`
-```
+### With `nullCleaner = true` & `emptyArraysCleaner = false`
+
+```js
 {
   a: 'value',
-  emptyArray: [],
+  emptyArray: [], // <<< Remained
   falseValue: false,
   zero: 0,
   b: {
@@ -185,32 +162,26 @@ With **nullCleaner** = `true` & **emptyArrayCleaner** = `false`
       { d: 'value' },
       {
         a: [
-          {
-            x: true
-          },
+          { x: true },
           {
             z: [true],
-            subChild: [
-              {
-                a: true
-              }
-            ]
+            subChild: [{ a: true }]
           }
         ]
       }
     ],
-
-    secondArr: [],
-    nestedArr1: [[true, false], []],
-    nestedArr2: [[], []]
+    secondArr: [], // <<< Remained
+    nestedArr1: [[true, false], []], // <<< Kept last element
+    nestedArr2: [[], []] // <<< Remained
   }
 }
 ```
-With **nullCleaner** = `true` & **emptyObjectsCleaner** = `false`
-```
+### With `nullCleaner = true` & `emptyObjectsCleaner = false`
+
+```js
 {
   a: 'value',
-  emptyObject: {},
+  emptyObject: {}, // <<< Remained
   falseValue: false,
   zero: 0,
   b: {
@@ -220,127 +191,63 @@ With **nullCleaner** = `true` & **emptyObjectsCleaner** = `false`
       { d: 'value' },
       {
         a: [
-          {
-            x: true,
-          },
-          {
-          },
+          {x: true},
+          {}, // <<< Remained
           {
             z: [true],
             subChild: [
-              {
-                a: true
-              },
-              {
-              }
+              {a: true},
+              {} // <<< Remained
             ]
           }
         ]
       }
     ],
-
     secondArr: [{
-      a: {
-      }
+      a: {} // <<< Remained
     }],
+    nestedArr1: [[true, false]]
+  }
+}
+```
 
-    nestedArr1: [[true, false]]
-  }
-}
-```
-With **nullCleaner** = `true` & **nanCleaner** = `false`
-```
+### With both `cleanKeys = ['a']` and `skipKeys = ['isUndefined']`
+
+```js
 {
-  a: 'value',
-  falseValue: false,
-  zero: 0,
-  b: {
-    a: 'another value',
-    arr: [
-      { d: 'value' },
-      { a: [
-        {
-          x: true,
-          y: NaN
-        },
-        {
-          y: NaN
-        },
-        {
-          z: [true],
-          subChild: [
-            {
-              a: true
-            }
-          ]
-        }
-      ]}
-    ],
-    nestedArr1: [[true, false]]
-  }
-}
-```
-With **nullCleaner**, **emptyObjectsCleaner**, **emptyArrayCleaner** & **emptyStringsCleaner** all equal `false`
-```
-{
-  a: 'value',
-  emptyString: '',
-  emptyArray: [],
-  emptyObject: {},
   isNull: null,
   falseValue: false,
   zero: 0,
+  isUndefined: undefined, //<<< Remained
   b: {
-    a: 'another value',
-    anotherEmptyString: '',
     arr: [
       { c: null },
       { d: 'value' },
-      {
-        a: [
-          {
-            x: true
-          },
-          {
-          },
-          {
-            z: [null, true],
-            subChild: [
-              {
-                a: true
-              },
-              {
-
-              }
-            ]
-          }
-        ]
-      }
     ],
-
-    secondArr: [{
-      a: {
-      }
-    }],
-
-    nestedArr1: [[null, true, false], []],
-    nestedArr2: [[null], []],
+    nestedArr1: [[null, true, false]],
+    nestedArr2: [[null]],
   }
+  // All 'a' attributes are removed
 }
 ```
-### Values cleaned by default are
-- undefined
-- '' (empty strings)
-- NaN
-- {} (empty objects)
-- [] (empty arrays)
-  
-### What makes this module unique
-- It's an extremely lightweight library.
-- Absolutely no dependencies.
-- Extremely fast compared to other modules with the same functionalities.
-- The ability to clean objects in place without creating new objects in memory.
+<h2 id="default-cleaned-values">🧹 Default Cleaned Values</h2>
 
-![enter image description here](https://github.com/Youssef93/js-object-cleaning-performance-compare/blob/master/performance.jpg?raw=true)
+By default, Fast-Cleaner removes:
 
-You can check how the comparison was made [here](https://github.com/Youssef93/js-object-cleaning-performance-compare)
+-   `undefined`
+-   `''` (empty strings)
+-   `NaN`
+-   `{}` (empty objects)
+-   `[]` (empty arrays)
+
+<h2 id="what-makes-this-module-unique">🌟 What Makes This Module Unique</h2>
+
+-   ⚡ **Extremely lightweight** and **fast**.
+-   🛠 **No dependencies**.
+-   🔄 Supports **in-place cleaning** for better memory efficiency.
+-   🧩 Handles deeply nested structures with ease.
+    
+
+![Performance Benchmark](https://github.com/Youssef93/js-object-cleaning-performance-compare/blob/master/performance.jpg?raw=true)
+
+👉 See how benchmarks were run [here](https://github.com/Youssef93/js-object-cleaning-performance-compare).
