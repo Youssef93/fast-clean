@@ -105,4 +105,26 @@ describe('Cleaning', () => {
       expect(input).toStrictEqual(cleanedObj);
     });
   });
+
+  describe('Miscellaneous', () => {
+    it('should test passing undefined', () => {
+      const cleanedObj = cleaner.clean(undefined);
+      expect(cleanedObj).toStrictEqual(undefined);
+    });
+
+    it('should test passing null', () => {
+      const cleanedObj = cleaner.clean(null);
+      expect(cleanedObj).toStrictEqual(null);
+    });
+
+    it('should test passing a primitive', () => {
+      const cleanedObj = cleaner.clean('value');
+      expect(cleanedObj).toStrictEqual('value');
+    });
+
+    it('should test passing an array', () => {
+      const cleanedObj = cleaner.clean([1, 2, undefined]);
+      expect(cleanedObj).toStrictEqual([1, 2]);
+    });
+  });
 });

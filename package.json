@@ -1,10 +1,14 @@
 {
   "name": "fast-clean",
-  "version": "1.5.0",
+  "version": "1.5.2",
   "description": "LightWeight, dependency free, javascript object cleaning library",
   "main": "index.js",
+  "types": "index.d.ts",
+  "engines": {
+    "node": ">=14"
+  },
   "scripts": {
-    "test": "node ./node_modules/jest/bin/jest ./test/spec.js"
+    "test": "jest ./test/spec.js"
   },
   "repository": {
     "type": "git",
