@@ -4,6 +4,7 @@ class Cleaner {
   constructor(options) {
     this.options = options;
     this._hop = Object.prototype.hasOwnProperty;
+    this._hasOverrides = !!(options.cleanKeys?.size || options.skipKeys?.size);
   }
 
   clean(data) {
@@ -37,12 +38,12 @@ class Cleaner {
       const value = object[key];
 
       if(Array.isArray(value)) {
-        const mappedArr = this._cleanArray(value);
+        const mappedArr = this._getFilteredArrayInPlace(value);
         if(this._shouldReturnArray(mappedArr, key)) object[key] = mappedArr;
         else delete object[key];
 
       } else if(this._isPlainObject(value)) {
-        const subFiltered = this.clean(value);
+        const subFiltered = this._cleanObjectInPlace(value);
         if(this._shouldReturnObject(subFiltered, key)) object[key] = subFiltered;
         else delete object[key];
 
@@ -63,11 +64,11 @@ class Cleaner {
       const value = object[key];
 
       if(Array.isArray(value)) {
-        const mappedArr = this._cleanArray(value);
+        const mappedArr = this._getFilteredArray(value);
         if(this._shouldReturnArray(mappedArr, key)) filtered[key] = mappedArr;
 
       } else if(this._isPlainObject(value)) {
-        const subFiltered = this.clean(value);
+        const subFiltered = this._cleanObject(value);
         if(this._shouldReturnObject(subFiltered, key)) filtered[key] = subFiltered;
 
       } else {
@@ -79,52 +80,56 @@ class Cleaner {
   }
 
   _getFilteredArrayInPlace(arr) {
-    for (let i = arr.length - 1; i >= 0; i--) {
-      const filteredItem = this.clean(arr[i]);
-
-      if(Array.isArray(filteredItem)) {
-        if(this._shouldReturnArray(filteredItem)) arr[i] = filteredItem;
-        else arr.splice(i, 1);
-
-      } else if(this._isPlainObject(filteredItem)) {
-        if(this._shouldReturnObject(filteredItem)) arr[i] = filteredItem;
-        else arr.splice(i, 1);
-
-      } else {
-        if(this._shouldRemoveValue(filteredItem)) arr.splice(i, 1);
+    // two-pointer in-place compaction preserves order and avoids many splices
+    let write = 0;
+    for (let read = 0; read < arr.length; read++) {
+      const item = arr[read];
+  
+      if (Array.isArray(item)) {
+        const v = this._getFilteredArrayInPlace(item);
+        if (this._shouldReturnArray(v)) arr[write++] = v;
+      } else if (this._isPlainObject(item)) {
+        const value = this.options.cleanInPlace ? this._cleanObjectInPlace(item) : this._cleanObject(item);
+        if (this._shouldReturnObject(value)) arr[write++] = value;
+  
+      } else if (!this._shouldRemoveValue(item)) {
+        arr[write++] = item;
       }
     }
+    // truncate once
+    if (write !== arr.length) arr.length = write;
     return arr;
   }
-
+  
   _getFilteredArray(arr) {
-    const out = [];
+    const out = new Array(arr.length); // preallocate; we'll shrink with length
+    let write = 0;
+  
     for (let i = 0; i < arr.length; i++) {
-      const filteredItem = this.clean(arr[i]);
-
-      if(Array.isArray(filteredItem)) {
-        if(this._shouldReturnArray(filteredItem)) out.push(filteredItem);
-
-      } else if(this._isPlainObject(filteredItem)) {
-        if(this._shouldReturnObject(filteredItem)) out.push(filteredItem);
-
-      } else if(!this._shouldRemoveValue(filteredItem)) {
-        out.push(filteredItem);
+      const item = arr[i];
+  
+      if (Array.isArray(item)) {
+        const v = this._getFilteredArray(item);
+        if (this._shouldReturnArray(v)) out[write++] = v;
+  
+      } else if (this._isPlainObject(item)) {
+        const v = this.options.cleanInPlace ? this._cleanObjectInPlace(item) : this._cleanObject(item);
+        if (this._shouldReturnObject(v)) out[write++] = v;
+  
+      } else if (!this._shouldRemoveValue(item)) {
+        out[write++] = item;
       }
     }
+    out.length = write;
     return out;
   }
 
   _isUserOverride(key) {
-    // Early exit when no key or not present in either Set
-    if(!key) return undefined;
-    const { cleanKeys, skipKeys } = this.options;
-    const inClean = cleanKeys.has(key);
-    const inSkip = skipKeys.has(key);
-    if(!inClean && !inSkip) return undefined;
-    // Higher priority to cleaning: if listed to clean => return false (i.e., do NOT skip)
-    if(inClean) return false;
-    if(inSkip) return true;
+    // Early exit when no key or no overrides have been provided
+    if (!this._hasOverrides || key == null) return undefined;
+    if (this.options.cleanKeys.has(key)) return false; // do NOT skip
+    if (this.options.skipKeys.has(key))  return true;  // skip
+    return undefined;
   }
 
   // Backward-compatible object test:
